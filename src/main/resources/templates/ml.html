@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IA — Previsão (ML) | APS</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="app">
+
+    <div th:replace="~{fragments :: sidebar('ml')}"></div>
+
+    <main class="main">
+
+        <header class="page-head">
+            <div>
+                <span class="eyebrow">MACHINE LEARNING</span>
+                <h1>Previsão de focos de incêndio</h1>
+                <p>
+                    Análise histórica e estimativa mensal para Rondônia,
+                    utilizando os registros importados de 2023 e 2024.
+                </p>
+            </div>
+        </header>
+
+        <section class="panel">
+
+            <h2>Dados analisados</h2>
+
+            <div th:if="${!temDados}" class="placeholder-panel">
+                <p>Importe os CSVs de 2023 e 2024 para analisar os dados.</p>
+                <a class="button" th:href="@{/importar}">
+                    Importar arquivos CSV
+                </a>
+            </div>
+
+            <div th:if="${temDados}">
+
+                <div class="stats-grid"
+                     style="display: grid;
+                            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                            gap: 16px;
+                            margin: 24px 0;">
+
+                    <div class="panel">
+                        <span class="eyebrow">FOCOS REGISTRADOS</span>
+                        <h2 th:text="${#numbers.formatInteger(totalHistorico, 0, 'POINT')}">
+                            0
+                        </h2>
+                    </div>
+
+                    <div class="panel">
+                        <span class="eyebrow">MESES ANALISADOS</span>
+                        <h2 th:text="${quantidadeMeses}">0</h2>
+                    </div>
+
+                </div>
+
+                <!-- Aviso breve sobre as previsões -->
+                <div class="panel"
+                     style="margin: 16px 0; padding: 14px 18px;
+                            border-left: 4px solid #eab308;">
+
+                    <p style="margin: 0;">
+                        <strong>Importante:</strong> as previsões são
+                        estimativas do modelo e não representam valores
+                        futuros confirmados.
+                    </p>
+
+                </div>
+
+                <!-- Avaliação do modelo -->
+                <h2>Avaliação do modelo</h2>
+
+                <p>
+                    O modelo é treinado com os meses iniciais e testado
+                    nos meses posteriores que não participaram do treinamento.
+                </p>
+
+                <div class="stats-grid"
+                     style="display: grid;
+                            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                            gap: 16px;
+                            margin: 24px 0;">
+
+                    <div class="panel">
+                        <span class="eyebrow">MESES DE TREINAMENTO</span>
+                        <h2 th:text="${mesesTreino}">0</h2>
+                    </div>
+
+                    <div class="panel">
+                        <span class="eyebrow">MESES DE TESTE</span>
+                        <h2 th:text="${mesesTeste}">0</h2>
+                    </div>
+
+                    <div class="panel">
+                        <span class="eyebrow">MAE</span>
+                        <h2 th:text="${#numbers.formatDecimal(mae, 1, 2, 'COMMA')}">
+                            0
+                        </h2>
+                        <p>Erro absoluto médio, em focos por mês.</p>
+                    </div>
+
+                    <div class="panel">
+                        <span class="eyebrow">RMSE</span>
+                        <h2 th:text="${#numbers.formatDecimal(rmse, 1, 2, 'COMMA')}">
+                            0
+                        </h2>
+                        <p>Erro quadrático médio, em focos por mês.</p>
+                    </div>
+
+                </div>
+
+                <p th:if="${mensagem != null}"
+                   th:text="${mensagem}">
+                    Avaliação do modelo.
+                </p>
+
+                <!-- Previsões futuras -->
+                <h2>Previsão dos próximos seis meses</h2>
+
+                <p>
+                    Os valores são estimativas calculadas pela regressão
+                    linear. Não representam registros confirmados.
+                </p>
+
+                <div style="overflow-x: auto;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <thead>
+                        <tr>
+                            <th style="text-align: left; padding: 12px;">
+                                Mês
+                            </th>
+
+                            <th style="text-align: right; padding: 12px;">
+                                Focos estimados
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="item : ${previsoes}">
+
+                            <td style="padding: 12px;"
+                                th:text="${item.mes}">
+                                01/2025
+                            </td>
+
+                            <td style="padding: 12px; text-align: right;"
+                                th:text="${#numbers.formatInteger(item.quantidade, 0, 'POINT')}">
+                                0
+                            </td>
+
+                        </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- Histórico observado -->
+                <h2 style="margin-top: 24px;">Histórico mensal observado</h2>
+
+                <p>
+                    Esta tabela apresenta os registros agrupados por mês.
+                    Meses sem registros entre o primeiro e o último mês
+                    encontrado são contabilizados como zero.
+                </p>
+
+                <div style="overflow-x: auto;">
+
+                    <table style="width: 100%; border-collapse: collapse;">
+
+                        <thead>
+                        <tr>
+                            <th style="text-align: left; padding: 12px;">
+                                Mês
+                            </th>
+
+                            <th style="text-align: left; padding: 12px;">
+                                Ano
+                            </th>
+
+                            <th style="text-align: right; padding: 12px;">
+                                Focos registrados
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="item : ${historicoMensal}">
+
+                            <td style="padding: 12px;"
+                                th:text="${item.mes}">
+                                01/2023
+                            </td>
+
+                            <td style="padding: 12px;"
+                                th:text="${item.ano}">
+                                2023
+                            </td>
+
+                            <td style="padding: 12px; text-align: right;"
+                                th:text="${#numbers.formatInteger(item.quantidade, 0, 'POINT')}">
+                                0
+                            </td>
+
+                        </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </section>
+
+        <footer> APS · Estrutura de Dados · Ciência da Computação · UNIP</footer>
+
+    </main>
+</div>
+</body>
+</html>

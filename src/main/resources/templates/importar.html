@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Importar CSV | APS</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body>
+<div class="app">
+
+    <div th:replace="~{fragments :: sidebar('importar')}"></div>
+
+    <main class="main">
+
+        <header class="page-head">
+            <div>
+                <span class="eyebrow">DADOS DO INPE</span>
+                <h1>Importar CSV</h1>
+                <p>
+                    Carregue as bases que serão usadas na ordenação
+                    e na comparação.
+                </p>
+            </div>
+        </header>
+
+        <div th:if="${sucesso}"
+             class="alerta sucesso"
+             th:text="${sucesso}">
+        </div>
+
+        <div th:if="${erro}"
+             class="alerta erro"
+             th:text="${erro}">
+        </div>
+
+        <section class="panel upload-panel">
+
+            <div class="upload-symbol">⇧</div>
+
+            <h2>Selecione os arquivos CSV</h2>
+
+            <p>
+                Selecione um ou mais arquivos de focos de incêndio
+                de Rondônia baixados do INPE.
+            </p>
+
+            <form method="post"
+                  th:action="@{/importar}"
+                  enctype="multipart/form-data"
+                  class="upload-form">
+
+                <input type="file"
+                       name="arquivos"
+                       accept=".csv,text/csv"
+                       multiple
+                       required>
+
+                <button class="button" type="submit">
+                    Importar dados selecionados
+                </button>
+
+            </form>
+
+            <div class="hint">
+                Você pode selecionar os arquivos de 2023 e 2024
+                juntos. Os registros serão combinados e substituirão
+                a base que estiver carregada atualmente.
+            </div>
+
+        </section>
+
+        <section class="stat-grid">
+
+            <article class="stat">
+                <span>Registros na memória</span>
+                <strong th:text="${total}">0</strong>
+                <small>Disponíveis para análise</small>
+            </article>
+
+            <article class="stat">
+                <span>Arquivos recomendados</span>
+                <strong>2023 / 2024</strong>
+                <small>Selecione os dois na mesma operação</small>
+            </article>
+
+        </section>
+
+        <footer>
+            APS · Estrutura de Dados · Ciência da Computação · UNIP
+        </footer>
+
+    </main>
+</div>
+</body>
+</html>
