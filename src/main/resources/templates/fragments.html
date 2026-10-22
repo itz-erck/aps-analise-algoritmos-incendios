@@ -1,56 +1,63 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<body>
-
-<aside class="sidebar" th:fragment="sidebar(active)">
-
-    <a class="brand" th:href="@{/}">
+  <body>
+    <aside class="sidebar" th:fragment="sidebar(active)">
+      <a class="brand" th:href="@{/}">
         <span class="brand-icon">🔥</span>
         <span>
-            <b>APS Incêndios</b>
-            <small>UNIP · Ciência da Computação</small>
+          <b>APS Incêndios</b>
+          <small>UNIP · Ciência da Computação</small>
         </span>
-    </a>
+      </a>
 
-    <nav>
-        <a th:href="@{/}"
-           th:classappend="${active == 'inicio'} ? ' ativo' : ''">
-            <span>⌂</span> Início
+      <nav>
+        <a
+          th:href="@{/}"
+          th:classappend="${active == 'inicio'} ? ' ativo' : ''"
+        >
+          <span>⌂</span> Início
         </a>
 
-        <a th:href="@{/importar}"
-           th:classappend="${active == 'importar'} ? ' ativo' : ''">
-            <span>⇧</span> Importar CSV
+        <a
+          th:href="@{/importar}"
+          th:classappend="${active == 'importar'} ? ' ativo' : ''"
+        >
+          <span>⇧</span> Importar CSV
         </a>
 
-        <a th:href="@{/ordenacao}"
-           th:classappend="${active == 'ordenacao'} ? ' ativo' : ''">
-            <span>⇅</span> Ordenação
+        <a
+          th:href="@{/ordenacao}"
+          th:classappend="${active == 'ordenacao'} ? ' ativo' : ''"
+        >
+          <span>⇅</span> Ordenação
         </a>
 
-        <a th:href="@{/comparar}"
-           th:classappend="${active == 'comparacao'} ? ' ativo' : ''">
-            <span>▥</span> Comparação
+        <a
+          th:href="@{/comparar}"
+          th:classappend="${active == 'comparacao'} ? ' ativo' : ''"
+        >
+          <span>▥</span> Comparação
         </a>
 
-        <a th:href="@{/ia/previsao}"
-           th:classappend="${active == 'ml'} ? ' ativo' : ''">
-            <span>◉</span> IA — Previsão (ML)
+        <a
+          th:href="@{/ia/previsao}"
+          th:classappend="${active == 'ml'} ? ' ativo' : ''"
+        >
+          <span>◉</span> IA — Previsão (ML)
         </a>
 
-        <a th:href="@{/sobre}"
-           th:classappend="${active == 'sobre'} ? ' ativo' : ''">
-            <span>ⓘ</span> Sobre
+        <a
+          th:href="@{/sobre}"
+          th:classappend="${active == 'sobre'} ? ' ativo' : ''"
+        >
+          <span>ⓘ</span> Sobre
         </a>
-    </nav>
+      </nav>
 
-    <div class="sidebar-foot">
-        Sistema de análise de focos<br>
+      <div class="sidebar-foot">
+        Sistema de análise de focos<br />
         Java 21 · Spring Boot
-    </div>
-
-</aside>
-
-</body>
+      </div>
+    </aside>
+  </body>
 </html>

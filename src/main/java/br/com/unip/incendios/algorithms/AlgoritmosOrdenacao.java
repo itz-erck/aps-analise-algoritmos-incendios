@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Locale;
 import java.text.Normalizer;
 import java.util.Comparator;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class AlgoritmosOrdenacao {
     public List<FocoIncendio> ordenar(List<FocoIncendio> entrada, AlgoritmoOrdenacao algoritmo,
                                       CriterioOrdenacao criterio, MetricasOrdenacao m) {
         List<FocoIncendio> dados = new ArrayList<>(entrada);
-        Comparator<FocoIncendio> comparador = criarComparador(criterio, m);
+        Comparator<FocoIncendio> comparador = criarComparador(dados, criterio, m);
         switch (algoritmo) {
             case BUBBLE -> bubble(dados, comparador, m);
             case SELECTION -> selection(dados, comparador, m);
@@ -23,23 +25,29 @@ public class AlgoritmosOrdenacao {
         return dados;
     }
 
-    private Comparator<FocoIncendio> criarComparador(CriterioOrdenacao criterio, MetricasOrdenacao m) {
+    private Comparator<FocoIncendio> criarComparador(List<FocoIncendio> dados, CriterioOrdenacao criterio, MetricasOrdenacao m) {
+        Map<FocoIncendio, String> biomasNormalizados = new IdentityHashMap<>();
+        Map<FocoIncendio, String> municipiosNormalizados = new IdentityHashMap<>();
+        for (FocoIncendio foco : dados) {
+            biomasNormalizados.put(foco, normalizar(foco.bioma()));
+            municipiosNormalizados.put(foco, normalizar(foco.municipio()));
+        }
+        java.util.function.Function<FocoIncendio, String> bioma = biomasNormalizados::get;
+        java.util.function.Function<FocoIncendio, String> municipio = municipiosNormalizados::get;
         Comparator<FocoIncendio> primario = switch (criterio) {
             case DATA -> Comparator.comparing(FocoIncendio::data);
-            case BIOMA -> Comparator.comparing(f -> normalizar(f.bioma()));
-            case MUNICIPIO -> Comparator.comparing(f -> normalizar(f.municipio()));
+            case BIOMA -> Comparator.comparing(bioma);
+            case MUNICIPIO -> Comparator.comparing(municipio);
         };
         Comparator<FocoIncendio> desempate = switch (criterio) {
-            case DATA -> Comparator.comparing((FocoIncendio f) -> normalizar(f.bioma()))
-                    .thenComparing(f -> normalizar(f.municipio()));
-            case BIOMA -> Comparator.comparing(FocoIncendio::data)
-                    .thenComparing(f -> normalizar(f.municipio()));
-            case MUNICIPIO -> Comparator.comparing(FocoIncendio::data)
-                    .thenComparing(f -> normalizar(f.bioma()));
+            case DATA -> Comparator.comparing(bioma).thenComparing(municipio);
+            case BIOMA -> Comparator.comparing(FocoIncendio::data).thenComparing(municipio);
+            case MUNICIPIO -> Comparator.comparing(FocoIncendio::data).thenComparing(bioma);
         };
         Comparator<FocoIncendio> completo = primario.thenComparing(desempate);
         return (a, b) -> { m.comparar(); return completo.compare(a, b); };
     }
+
 
     private String normalizar(String s) {
         if (s == null) return "";

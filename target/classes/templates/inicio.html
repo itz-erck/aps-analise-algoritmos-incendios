@@ -1,211 +1,202 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Início | APS Incêndios</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="stylesheet" th:href="@{/style.css}" />
 
     <style>
-        .grafico-panel {
-            background: #ffffff;
-            border: 1px solid #dfe7f2;
-            border-radius: 14px;
-            padding: 24px;
-            margin: 24px 0;
-        }
+      .grafico-panel {
+        background: #ffffff;
+        border: 1px solid #dfe7f2;
+        border-radius: 14px;
+        padding: 24px;
+        margin: 24px 0;
+      }
 
-        .grafico-panel h2 {
-            margin: 0 0 8px;
-            font-size: 20px;
-        }
+      .grafico-panel h2 {
+        margin: 0 0 8px;
+        font-size: 20px;
+      }
 
-        .grafico-descricao {
-            color: #718096;
-            font-size: 14px;
-            margin-bottom: 28px;
-        }
+      .grafico-descricao {
+        color: #718096;
+        font-size: 14px;
+        margin-bottom: 28px;
+      }
 
-        .barra-item {
-            margin-bottom: 24px;
-        }
+      .barra-item {
+        margin-bottom: 24px;
+      }
 
-        .barra-cabecalho {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 9px;
-            font-size: 14px;
-            color: #34445b;
-        }
+      .barra-cabecalho {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 9px;
+        font-size: 14px;
+        color: #34445b;
+      }
 
-        .barra-fundo {
-            width: 100%;
-            height: 26px;
-            background: #edf2f8;
-            border-radius: 7px;
-            overflow: hidden;
-        }
+      .barra-fundo {
+        width: 100%;
+        height: 26px;
+        background: #edf2f8;
+        border-radius: 7px;
+        overflow: hidden;
+      }
 
-        .barra-valor {
-            height: 100%;
-            min-width: 0;
-            border-radius: 7px;
-            transition: width 0.4s ease;
-        }
+      .barra-valor {
+        height: 100%;
+        min-width: 0;
+        border-radius: 7px;
+        transition: width 0.4s ease;
+      }
 
-        .barra-2023 {
-            background: #2874e8;
-        }
+      .barra-2023 {
+        background: #2874e8;
+      }
 
-        .barra-2024 {
-            background: #17a673;
-        }
+      .barra-2024 {
+        background: #17a673;
+      }
 
-        .grafico-nota {
-            color: #718096;
-            background: #f4f7fb;
-            padding: 12px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-top: 20px;
-        }
+      .grafico-nota {
+        color: #718096;
+        background: #f4f7fb;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-top: 20px;
+      }
 
-        .grafico-vazio {
-            color: #718096;
-            padding: 20px 0;
-        }
+      .grafico-vazio {
+        color: #718096;
+        padding: 20px 0;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-<div class="app">
+  <body>
+    <div class="app">
+      <div th:replace="~{fragments :: sidebar('inicio')}"></div>
 
-    <div th:replace="~{fragments :: sidebar('inicio')}"></div>
-
-    <main class="main">
-
+      <main class="main">
         <header class="page-head">
-            <div>
-                <h1>Bem-vindo ao Sistema APS</h1>
-                <p>Análise de focos de incêndio em Rondônia</p>
-            </div>
+          <div>
+            <h1>Bem-vindo ao Sistema APS</h1>
+            <p>Análise de focos de incêndio em Rondônia</p>
+          </div>
         </header>
 
         <section class="hero">
-            <div>
-                <span class="pill">ESTRUTURA DE DADOS</span>
+          <div>
+            <span class="pill">ESTRUTURA DE DADOS</span>
 
-                <h2>Dados organizados. Desempenho comparado.</h2>
+            <h2>Dados organizados. Desempenho comparado.</h2>
 
-                <p>
-                    Importe os arquivos do INPE, execute algoritmos de
-                    ordenação e entenda o custo de cada execução.
-                </p>
+            <p>
+              Importe os arquivos do INPE, execute algoritmos de ordenação e
+              entenda o custo de cada execução.
+            </p>
 
-                <a class="button light" th:href="@{/importar}">
-                    Importar arquivos CSV
-                </a>
-            </div>
+            <a class="button light" th:href="@{/importar}">
+              Importar arquivos CSV
+            </a>
+          </div>
         </section>
 
         <section class="stat-grid">
+          <article class="stat">
+            <span>Total de registros</span>
+            <strong th:text="${total}">0</strong>
+            <small>Focos carregados na sessão</small>
+          </article>
 
-            <article class="stat">
-                <span>Total de registros</span>
-                <strong th:text="${total}">0</strong>
-                <small>Focos carregados na sessão</small>
-            </article>
+          <article class="stat">
+            <span>Focos em 2023</span>
+            <strong th:text="${total2023}">0</strong>
+            <small>Registros do ano de 2023</small>
+          </article>
 
-            <article class="stat">
-                <span>Focos em 2023</span>
-                <strong th:text="${total2023}">0</strong>
-                <small>Registros do ano de 2023</small>
-            </article>
+          <article class="stat">
+            <span>Focos em 2024</span>
+            <strong th:text="${total2024}">0</strong>
+            <small>Registros do ano de 2024</small>
+          </article>
 
-            <article class="stat">
-                <span>Focos em 2024</span>
-                <strong th:text="${total2024}">0</strong>
-                <small>Registros do ano de 2024</small>
-            </article>
+          <article class="stat">
+            <span>Biomas identificados</span>
+            <strong th:text="${totalBiomas}">0</strong>
+            <small>Biomas distintos nos dados</small>
+          </article>
 
-            <article class="stat">
-                <span>Biomas identificados</span>
-                <strong th:text="${totalBiomas}">0</strong>
-                <small>Biomas distintos nos dados</small>
-            </article>
-
-            <article class="stat">
-                <span>Municípios identificados</span>
-                <strong th:text="${totalMunicipios}">0</strong>
-                <small>Municípios distintos nos dados</small>
-            </article>
-
+          <article class="stat">
+            <span>Municípios identificados</span>
+            <strong th:text="${totalMunicipios}">0</strong>
+            <small>Municípios distintos nos dados</small>
+          </article>
         </section>
 
         <section class="grafico-panel">
+          <h2>Focos de incêndio por ano</h2>
 
-            <h2>Focos de incêndio por ano</h2>
+          <p class="grafico-descricao">
+            Comparação da quantidade de registros importados para cada ano.
+          </p>
 
-            <p class="grafico-descricao">
-                Comparação da quantidade de registros importados
-                para cada ano.
-            </p>
+          <div th:if="${total2023 + total2024 > 0}">
+            <div class="barra-item">
+              <div class="barra-cabecalho">
+                <strong>2023</strong>
+                <span
+                  th:text="${#numbers.formatInteger(total2023, 1, 'POINT')}"
+                >
+                  0
+                </span>
+              </div>
 
-            <div th:if="${total2023 + total2024 > 0}">
-
-                <div class="barra-item">
-                    <div class="barra-cabecalho">
-                        <strong>2023</strong>
-                        <span th:text="${#numbers.formatInteger(total2023, 1, 'POINT')}">
-                            0
-                        </span>
-                    </div>
-
-                    <div class="barra-fundo">
-                        <div class="barra-valor barra-2023"
-                             th:style="'width:' + ${largura2023} + '%'">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="barra-item">
-                    <div class="barra-cabecalho">
-                        <strong>2024</strong>
-                        <span th:text="${#numbers.formatInteger(total2024, 1, 'POINT')}">
-                            0
-                        </span>
-                    </div>
-
-                    <div class="barra-fundo">
-                        <div class="barra-valor barra-2024"
-                             th:style="'width:' + ${largura2024} + '%'">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grafico-nota">
-                    A maior quantidade anual corresponde a 100% da largura.
-                    Os valores são calculados com base nos dados carregados.
-                </div>
-
+              <div class="barra-fundo">
+                <div
+                  class="barra-valor barra-2023"
+                  th:style="'width:' + ${largura2023} + '%'"
+                ></div>
+              </div>
             </div>
 
-            <p class="grafico-vazio"
-               th:if="${total2023 + total2024 == 0}">
-                Importe os arquivos CSV de 2023 e 2024 para visualizar
-                a comparação anual.
-            </p>
+            <div class="barra-item">
+              <div class="barra-cabecalho">
+                <strong>2024</strong>
+                <span
+                  th:text="${#numbers.formatInteger(total2024, 1, 'POINT')}"
+                >
+                  0
+                </span>
+              </div>
 
+              <div class="barra-fundo">
+                <div
+                  class="barra-valor barra-2024"
+                  th:style="'width:' + ${largura2024} + '%'"
+                ></div>
+              </div>
+            </div>
+
+            <div class="grafico-nota">
+              A maior quantidade anual corresponde a 100% da largura. Os valores
+              são calculados com base nos dados carregados.
+            </div>
+          </div>
+
+          <p class="grafico-vazio" th:if="${total2023 + total2024 == 0}">
+            Importe os arquivos CSV de 2023 e 2024 para visualizar a comparação
+            anual.
+          </p>
         </section>
 
-        <footer>
-            APS · Estrutura de Dados · Ciência da Computação · UNIP
-        </footer>
-
-    </main>
-</div>
-</body>
+        <footer>APS · Estrutura de Dados · Ciência da Computação · UNIP</footer>
+      </main>
+    </div>
+  </body>
 </html>
