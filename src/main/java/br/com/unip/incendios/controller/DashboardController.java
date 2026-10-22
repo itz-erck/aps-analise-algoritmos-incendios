@@ -34,29 +34,20 @@ public class DashboardController {
     public String inicio(Model model) {
         List<FocoIncendio> dados = focoService.todos();
 
-        long total2023 = dados.stream()
-                .filter(f -> f.data() != null
-                        && f.data().getYear() == 2023)
-                .count();
-
-        long total2024 = dados.stream()
-                .filter(f -> f.data() != null
-                        && f.data().getYear() == 2024)
-                .count();
-
-        long totalBiomas = dados.stream()
-                .map(FocoIncendio::bioma)
-                .filter(b -> b != null && !b.isBlank())
-                .map(String::trim)
-                .distinct()
-                .count();
-
-        long totalMunicipios = dados.stream()
-                .map(FocoIncendio::municipio)
-                .filter(m -> m != null && !m.isBlank())
-                .map(String::trim)
-                .distinct()
-                .count();
+        long total2023 = 0;
+        long total2024 = 0;
+        Set<String> biomas = new HashSet<>();
+        Set<String> municipios = new HashSet<>();
+        for (FocoIncendio foco : dados) {
+            if (foco.data() != null) {
+                if (foco.data().getYear() == 2023) total2023++;
+                if (foco.data().getYear() == 2024) total2024++;
+            }
+            if (foco.bioma() != null && !foco.bioma().isBlank()) biomas.add(foco.bioma().trim());
+            if (foco.municipio() != null && !foco.municipio().isBlank()) municipios.add(foco.municipio().trim());
+        }
+        long totalBiomas = biomas.size();
+        long totalMunicipios = municipios.size();
 
         long maiorTotal = Math.max(total2023, total2024);
 
@@ -209,13 +200,16 @@ public class DashboardController {
     public String comparar(
             @RequestParam(defaultValue = "DATA")
             CriterioOrdenacao criterio,
+            @RequestParam(defaultValue = "false")
+            boolean recalcular,
             Model model) {
 
         model.addAttribute("criterio", criterio);
-        model.addAttribute(
-                "resultados",
-                focoService.comparar(criterio)
-        );
+        Map<String, ResultadoOrdenacao> resultados = recalcular || focoService.possuiComparacao(criterio)
+                ? focoService.comparar(criterio, recalcular)
+                : Collections.emptyMap();
+        model.addAttribute("resultados", resultados);
+        model.addAttribute("precisaCalcular", resultados.isEmpty() && !focoService.todos().isEmpty());
 
         return "comparacao";
     }

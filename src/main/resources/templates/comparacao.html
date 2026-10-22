@@ -30,14 +30,15 @@
                     Critério de ordenação
                     <select name="criterio">
                         <option value="DATA"
-                                th:selected="${criterio == 'DATA'}">Data</option>
+                                th:selected="${criterio.name() == 'DATA'}">Data</option>
                         <option value="BIOMA"
-                                th:selected="${criterio == 'BIOMA'}">Bioma</option>
+                                th:selected="${criterio.name() == 'BIOMA'}">Bioma</option>
                         <option value="MUNICIPIO"
-                                th:selected="${criterio == 'MUNICIPIO'}">Município</option>
+                                th:selected="${criterio.name() == 'MUNICIPIO'}">Município</option>
                     </select>
                 </label>
 
+                <input type="hidden" name="recalcular" value="true">
                 <button class="button" type="submit">
                     Comparar novamente
                 </button>
@@ -85,7 +86,8 @@
 
                     <tr th:if="${resultados == null or resultados.isEmpty()}">
                         <td colspan="7">
-                            Nenhum resultado disponível. Importe os dados e execute a comparação.
+                            <span th:if="${precisaCalcular}">Os dados estão carregados. Clique em “Comparar novamente” para iniciar o cálculo completo.</span>
+                            <span th:unless="${precisaCalcular}">Nenhum resultado disponível. Importe os dados e execute a comparação.</span>
                         </td>
                     </tr>
                     </tbody>
